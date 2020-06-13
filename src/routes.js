@@ -2,8 +2,12 @@ const express = require('express');
 const arduinoController = require('./controllers/arduinoController');
 const devicesController = require('./controllers/devicesController');
 const panelController = require('./controllers/panelController');
+const viewsController = require('./controllers/viewsController');
 
 const route = express.Router();
+
+route.get('/', viewsController.indexDevices);
+route.post('/', viewsController.create);
 
 route.post('/devices', panelController.create);
 route.get('/devices', panelController.indexDevices);

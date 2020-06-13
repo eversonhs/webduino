@@ -1,11 +1,19 @@
 const express = require('express');
+const nunjucks = require('nunjucks');
+
 const routes = require('./routes');
-const cors = require('cors');
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+app.use(express.static("public"));
+app.use(express.urlencoded({extended: true}));
+
+nunjucks.configure("src/views", {
+    express: app,
+    noCache: true
+});
+
+
 app.use(routes);
 
 app.listen(3333);

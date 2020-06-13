@@ -1,0 +1,100 @@
+.devices-list .device {
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border: 0;
+    border-radius: 10px;
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.devices-list .device .device-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.devices-list .device .device-header strong{
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.devices-list .device .device-header button {
+    outline: none;
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: var(--primary-color);
+}
+
+.devices-list .device .device-header button .remove-btn {
+    color: white;
+    transition: 400ms;
+}
+
+.devices-list .device .device-header button .remove-btn:hover {
+    cursor: pointer;
+    color: var(--light-primary-color);
+}
+
+.devices-list .device .device-body {
+    display: flex;
+    flex-direction: column;
+    
+    justify-content: space-around;
+    margin-bottom: 30px;
+}
+
+.devices-list .device .device-body div {
+    display: flex;
+    align-items: center;
+}
+.devices-list .device .device-body div+div {
+    margin-top: 10px;
+}
+
+.devices-list .device .device-body div strong {
+    margin-right: 20px;
+    font-size: 1.6rem;
+    font-weight: 500;
+}
+
+.devices-list .device .device-body div p {
+    font-size: 1.5rem;
+    font-weight: 300;
+}
+
+.devices-list .device .switch-btn {
+    outline: none;
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding: 1rem;
+    border-radius: 10px;
+    border: 0;
+    color: white;
+    background-color: var(--primary-color);
+}
+
+.devices-list .device .switch-btn.btn-off {
+    background-color: var(--dark-primary-color);;
+    transition: 400ms;
+}
+
+.devices-list .device .switch-btn.btn-off:hover {
+    cursor: pointer;
+    background-color: var(--dark-secondary-color);
+}
+
+.devices-list .device .switch-btn.btn-on {
+    background-color: Var(--secondary-color);
+    transition: 400ms;
+}
+
+.devices-list .device .switch-btn.btn-on:hover {
+    cursor: pointer;
+    background-color: var(--light-secondary-color);
+}

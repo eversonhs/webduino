@@ -3,9 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <link rel="stylesheet" href="/styles/global.css">
+    <link rel="stylesheet" href="styles/page-header/style.css">
+    <link rel="stylesheet" href="/styles/page-header/responsive.css">
+
+    {% block styles %}
+    {% endblock styles %}
+    <title>Arduino Home Devices</title>
 </head>
 <body>
+    {% include "page-header.html" %}
     
+    <main>
+        {% block content %}
+        {% endblock content %}
+    </main>
+
+    {% block modal %}
+    {% endblock modal %}
+
+    <script src="/scripts/pageSelector.js"></script>
+    {% block scripts %}
+    {% endblock scripts %}
 </body>
 </html>

@@ -1,0 +1,38 @@
+.devices-container {
+    margin-top: var(--header-height);
+}
+
+.devices-container .add-btn {
+    text-decoration: none;
+
+    padding: 10px 20px;
+    margin: 20px 50px;
+
+    border: 0;
+    border-radius: 8px;
+
+    display: inline-flex;
+    align-items: center;
+
+    color: white;
+    background-color: var(--primary-color);
+
+    transition: 400ms;
+}
+
+.devices-container .add-btn:hover {
+    background-color: var(--light-primary-color);
+    transform: scale(1.1);
+}
+
+.devices-container .add-btn .add-icon {
+    margin-right: 10px;
+}
+
+.devices-container .devices-list {
+    margin: 0 50px;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 50px;
+}

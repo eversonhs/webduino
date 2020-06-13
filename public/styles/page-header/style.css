@@ -1,0 +1,80 @@
+.home-container{
+    width: 100%;
+    height: var(--header-height);
+    position: fixed;
+    top: 0;
+    z-index: 999;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+
+    color: white;
+    background-color: var(--primary-color);
+}
+
+.home-container #main-header {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+}
+
+.home-container #main-header .logo {
+    display:flex;
+    margin: 10px;
+}
+
+.home-container #main-header h1 {
+    font-size: 1.5em;
+}
+
+.home-container nav {
+    height: 50px;
+    width: 100%;
+
+    padding: 0 50px;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    align-items: center;
+
+    background-color: var(--dark-primary-color);
+}
+
+.home-container nav .navbar-btn {
+    text-decoration: none;
+    outline: none;
+
+    padding: 5px;
+    margin: 0;
+
+    display: flex;
+    align-items: center;
+
+    font-size: 1.2em;
+    line-height: 40px;
+    
+    border-radius: 0;
+    color: white;
+    transition: 100ms;   
+}
+
+.home-container nav .navbar-btn:hover {
+    background-color: var(--light-primary-color);
+}
+
+.home-container nav .navbar-btn.btn-pressed {
+    cursor: default;
+    border: solid var(--secondary-color);
+    border-width: 3px 0 0;
+    padding-bottom: 2px;
+    background-color: #303030;
+    pointer-events: none;
+}
+
+.home-container nav .navbar-btn .navbar-icons {
+    margin-right: 10px;
+}

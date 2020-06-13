@@ -1,9 +1,15 @@
 const connection = require('../connection');
+const { request } = require('express');
 
 module.exports = {
 
     async create(request, response) {
-        const {name, type, pin, value} = request.body;
+
+        const data = request.body;
+        const name = data["device-name"];
+        const type = data["device-type"];
+        const pin = data["device-pin"];
+        const value = 0;
         const valueChanged = 'true';
 
         await connection('arduinoDevices').
@@ -13,7 +19,8 @@ module.exports = {
             pin,
             value,
             valueChanged
-        });
+        }).catch(() => alert(`Error: Device not created.`));
+        ;
 
         return response.sendStatus(201);
     },
