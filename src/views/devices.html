@@ -22,7 +22,7 @@
             <li class="device">
                 <div class="device-header">
                     <strong># {{device.name}}</strong>
-                    <button>
+                    <button class="delete-btn">
                         <img class="remove-btn" src="assets/icons/delete.svg" alt="Remover dispositivo">
                     </button>
                 </div>
@@ -36,8 +36,8 @@
                         <p>{{device.pin}}</p>
                     </div>
                 </div>
-                <button class="switch-btn btn-on">
-                    Ligado
+                <button class="switch-btn btn-off">
+                    Desligado
                 </button>
         {% endfor %}
         </ul>
@@ -50,18 +50,18 @@
             <h1>Adicionar dispositivo</h1>
             <img class="close-btn" src="assets/icons/close.svg" alt="Voltar para dispositivos">
         </div>
-        <form action="/devices" method="POST">
-            <label for="device-name">Nome do dispositivo</label>
-            <input name="device-name" type="text" placeholder="Nome do dispositivo" required>
+        <form>
+            <label for="name">Nome do dispositivo</label>
+            <input name="name" type="text" placeholder="Nome do dispositivo" required>
 
-            <label for="device-type">Tipo do dispositivo</label>
-            <select name="device-type" required>
+            <label for="type">Tipo do dispositivo</label>
+            <select name="type" required>
                 <option value="boolean">Boolean</option>
                 <option value="continuous">Continuous</option>
             </select>
 
-            <label for="device-pin">Pino (Pin)</label>
-            <input id="pin" name="device-pin" type="number" min="5" max="9" placeholder="Pino" required/>
+            <label for="pin">Pino (Pin)</label>
+            <input name="pin" type="number" min="5" max="9" placeholder="Pino" required/>
 
             <button type="submit">Criar dispositivo</button>
         </form>
@@ -69,5 +69,5 @@
 {% endblock modal %}
 
 {% block scripts %}
-    <script src="/scripts/createDevice.js"></script>
+    <script src="/scripts/devices.js"></script>
 {% endblock scripts %}

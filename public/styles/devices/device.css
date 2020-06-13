@@ -39,6 +39,7 @@
 .devices-list .device .device-header button .remove-btn:hover {
     cursor: pointer;
     color: var(--light-primary-color);
+    transform: scale(1.10);
 }
 
 .devices-list .device .device-body {

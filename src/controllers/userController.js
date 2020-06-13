@@ -1,20 +1,24 @@
 const connection = require('../connection');
 
 module.exports = {
-
     async create(request, response) {
-        const {name, type, pin, value} = request.body;
+        const {name, type, pin} = request.body;
+        const value = 0;
         const valueChanged = 'true';
 
-        await connection('arduinoDevices').
-        insert({
-            name,
-            type,
-            pin,
-            value,
-            valueChanged
-        });
-
+        try {
+            await connection('arduinoDevices').
+            insert({
+                name,
+                type,
+                pin,
+                value,
+                valueChanged
+            });
+        } catch(err) {
+            
+        }
+        
         return response.sendStatus(201);
     },
 
@@ -31,5 +35,4 @@ module.exports = {
         
         return response.render("devices.html", {devices});
     }
-    
 };
