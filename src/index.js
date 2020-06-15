@@ -2,24 +2,25 @@ const express = require('express');
 const nunjucks = require('nunjucks');
 const http = require('http');
 const socketIO = require('socket.io');
+const devicesController = require('./controllers/devicesController');
+
 const routes = require('./routes');
-const socketController = require('./controllers/socketController');
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIO.listen(server);
 
+const devices = io.of('/devices');
+
 app.use(express.static("public"));
-app.use(express.urlencoded({extended: true}));
 
 nunjucks.configure("src/views", {
     express: app,
     noCache: true
 });
 
-app.use(routes);
+devices.on("connection", devicesController.connection);
 
-// socketIO namespaces
-io.on("connection", socketController.connection);
+app.use(routes);
 
 server.listen(3333);

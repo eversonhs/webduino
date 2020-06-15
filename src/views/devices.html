@@ -11,7 +11,6 @@
 {% endblock styles %}
 
 {% block content %}
-    
     <div class="devices-container">
         <button class="add-btn" href="#">
             <img src="assets/icons/addbox.svg" alt="add Device" class="add-icon">
@@ -36,9 +35,16 @@
                         <p>{{device.pin}}</p>
                     </div>
                 </div>
-                <button class="switch-btn btn-off">
-                    Desligado
-                </button>
+                {% if device.value == 0 %}
+                    <button class="switch-btn btn-off">
+                        Desligado
+                    </button>
+                {% else %}
+                    <button class="switch-btn btn-on">
+                        Ligado
+                    </button>
+                {% endif %}
+            </li>
         {% endfor %}
         </ul>
     </div>
