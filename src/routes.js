@@ -6,7 +6,6 @@ const userController = require('./controllers/userController');
 const route = express.Router();
 
 route.get('/', userController.indexDevices);
-route.post('/', userController.create);
 
 route.post('/device', devicesController.changeValue);
 
