@@ -31,9 +31,9 @@ Device.prototype = {
         this.value = value;
         const switchBtn = this.node.querySelector("button.switch-btn");
         if(this.value)
-            switchBtn.innerHTML = "Ligado";    
+            switchBtn.innerHTML = "Desligar";    
         else
-            switchBtn.innerHTML = "Desligado";
+            switchBtn.innerHTML = "Ligar";
         switchBtn.classList.toggle("btn-on");
         switchBtn.classList.toggle("btn-off");
     },
