@@ -1,26 +1,118 @@
-const deviceSocket = io('/devices');
+function Device(device) {
+    this.id = device.id;
+    this.name =  device.name;
+    this.type = device.type;
+    this.pin =  device.pin;
+    this.value =  device.value;
+    this.node = {};
+}
+Device.prototype = {
+    deviceListNode: {},
+    constructor: Device,
+    changeValue: function() {
+        this.value = (!this.value ? 1 : 0);
+        deviceSocket.emit('changeValue', {id: this.id, value: this.value}, (status) => {
+            if(status === 200) {
+                this.updateDevice();
+            }
+        });
+    },
+    deleteDevice: function(callbackFn) {
+        deviceSocket.emit('remove', {id: this.id}, (status) => {
+            if(status === 200) {
+                alert(`Device deleted.`);
+                this.removeDevice(callbackFn);
+            }
+            else {
+                alert(`Error: device not deleted.`);
+            }
+        });
+    },
+    updateDevice: function(value = this.value) {
+        this.value = value;
+        const switchBtn = this.node.querySelector("button.switch-btn");
+        if(this.value)
+            switchBtn.innerHTML = "Ligado";    
+        else
+            switchBtn.innerHTML = "Desligado";
+        switchBtn.classList.toggle("btn-on");
+        switchBtn.classList.toggle("btn-off");
+    },
+    removeDevice: function(callbackFn) {
+        this.node.remove();
+        callbackFn();
+    }
+};
 
-var devices = [];
+function addDevice(devices, device) {
+    const templateNode = document.querySelector("li.device").cloneNode(true);
+    templateNode.removeAttribute("id");
+    templateNode.querySelector("strong#device-name").textContent = device.name;
+    templateNode.querySelector("p#device-id").textContent = (device.id).toString();
+    templateNode.querySelector("p#device-pin").textContent = (device.pin).toString();
 
-async function populateDevices() {
-    
-    await deviceSocket.on('index', (data) => {
-        devices = [...data];
-    });
-
+    devices[device.id] = new Device(device);
+    addEvent(templateNode, devices);
+    devices.deviceListNode.appendChild(templateNode);
 }
 
-async function submitForm(event) {
+function addEvent(device, deviceList) {
+    let deviceDeleteBtn = device.querySelector("button.delete-btn");
+    let deviceSwitchBtn = device.querySelector("button.switch-btn");
+    let deviceId = device.querySelector("p#device-id").textContent;
+    console.log(device);
+    deviceId = parseInt(deviceId);
+    deviceList[deviceId].node = device;            
+    console.log(deviceList[deviceId]);
+    deviceDeleteBtn.addEventListener("click", () => {
+        deviceList[deviceId].deleteDevice(() => {
+            delete deviceList[deviceId];    
+        });
+    }, true);
+
+    deviceSwitchBtn.addEventListener("click", () => {
+        deviceList[deviceId].changeValue();
+    }, true);
+}
+
+function setDeviceEvents(deviceList) {
+    let deviceNodeList = document.querySelectorAll("li.device:not(#template)");
+    let deviceListNode = document.querySelector("ul.devices-list");
+
+    deviceList.deviceListNode = deviceListNode;
+    deviceNodeList.forEach((device) => {
+        addEvent(device, deviceList);
+    });
+
+    return deviceList;
+}
+
+function populateDeviceList() {
+    return new Promise((resolve, reject) => {
+        let deviceList = Device.prototype;
+        
+        deviceSocket.on('index', (data) => {
+            data.forEach((device) => {
+                deviceList[device.id] = (new Device(device)); 
+            });
+            resolve(deviceList);
+        });
+    });
+}
+
+function submitForm(event, devices) {
     event.preventDefault();
     const deviceForm = event.target;
     const formContainer = deviceForm.parentNode;
     const deviceData = new FormData(deviceForm);
     const data = JSON.parse(JSON.stringify(Object.fromEntries(deviceData)));
     
-    await deviceSocket.emit('create', data, (status) => {
+    deviceSocket.emit('create', data, (status) => {
         if(status === 201) {
             alert(`Device create.`);
             formContainer.classList.toggle("hidden");
+            console.log(data);
+            // addDevice(devices, data);
         }
         else {
             alert(`Error: Device not created.`);
@@ -28,81 +120,37 @@ async function submitForm(event) {
     });
 }
 
-function createDevice() {
+function createDeviceHandler(devices) {
     const deviceForm = document.querySelector("form");
-    deviceForm.addEventListener("submit", submitForm);
+    deviceForm.addEventListener("submit",(event) => {
+        submitForm(event, devices);
+    } );
 }
 
-
-async function switchStateBtn(event) {
-    const deviceBtn = event.target;
-    let deviceId = deviceBtn.
-        parentNode.
-        childNodes[3].
-        firstElementChild.
-        innerHTML.
-        match(/\d+/);
-    deviceId = parseInt(deviceId[0]);
-
-    if(deviceBtn.className === "switch-btn btn-off") {
-        deviceBtn.innerHTML = "Ligado";
-        deviceSocket.emit('changeValue', {id: deviceId, value: 1}, (status) => {
-            if(status !== 200) {
-                alert(`Error: value not changed.`);
-            }
+function updateState(devices) {
+    deviceSocket.on('update', (data) => {
+        const {id, value} = data;
+        devices[id].updateDevice(value);
+    });
+    deviceSocket.on('delete', (data) => {
+        const {id} = data;
+        devices[id].removeDevice(() => {
+            delete devices[id];
         });
-    }
-
-    else if(deviceBtn.className === "switch-btn btn-on") {
-        deviceBtn.innerHTML = "Desligado";
-        deviceSocket.emit('changeValue', {id: deviceId, value: 0}, (status) => {
-            if(status !== 200) {
-                alert(`Error: value not changed.`);
-            }
-        });
-    }
-    deviceBtn.classList.toggle("btn-off");
-    deviceBtn.classList.toggle("btn-on");
-}
-
-function deviceStateBtn() {
-    const devicesBtn = document.querySelectorAll("button.switch-btn");
-    
-    devicesBtn.forEach((deviceBtn) => {
-        deviceBtn.addEventListener("click", switchStateBtn);
+    });
+    deviceSocket.on('add', (data) => {
+        const device = data[0];
+        addDevice(devices, device);
     });
 }
 
-async function deleteDevice(event) {
-    const device = event.target.parentNode.parentNode.parentNode;
-    let idDevice = device.
-        childNodes[3].
-        firstElementChild.
-        innerHTML.
-        match(/\d+/);
-    idDevice = parseInt(idDevice[0]);
 
-    await deviceSocket.emit('remove', {id: idDevice}, (status) => {
-        if(status === 200) {
-            alert(`Device deleted.`);
-            device.remove();
-        }
-        else {
-            alert(`Error: device not deleted.`);
-        }
-    });
-    
-}
+const deviceSocket = io('/devices');
+var devices = {};
 
-function deviceDeleteBtn() {
-    const devicesDeleteBtn = document.querySelectorAll("img.remove-btn");
+populateDeviceList(devices).then((deviceList) => {
+    devices = setDeviceEvents(deviceList);
+    updateState(devices);
+});
 
-    devicesDeleteBtn.forEach((deleteBtn) => {
-        deleteBtn.addEventListener("click", deleteDevice);
-    });
-}
-
-populateDevices();
-createDevice();
-deviceStateBtn();
-deviceDeleteBtn();
+createDeviceHandler(devices);
