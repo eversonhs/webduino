@@ -16,11 +16,11 @@
             <img src="assets/icons/addbox.svg" alt="add Device" class="add-icon">
             <span> Adicionar dispositivo </span>
         </button>
+        
         <ul class="devices-list">
-        {% for device in devices %}
-            <li class="device">
+            <li class="device" id="template">
                 <div class="device-header">
-                    <strong># {{device.name}}</strong>
+                    <strong id="device-name"></strong>
                     <button class="delete-btn">
                         <img class="remove-btn" src="assets/icons/delete.svg" alt="Remover dispositivo">
                     </button>
@@ -28,11 +28,34 @@
                 <div class="device-body">
                     <div>
                         <strong>ID</strong>
-                        <p>{{device.id}}</p>
+                        <p id="device-id"></p>
                     </div>
                     <div>
                         <strong>PIN</strong>
-                        <p>{{device.pin}}</p>
+                        <p id="device-pin"></p>
+                    </div>
+                </div>
+                <button class="switch-btn btn-off">
+                    Desligado
+                </button>
+            </li>
+        
+            {% for device in devices %}
+            <li class="device">
+                <div class="device-header">
+                    <strong id="device-name">{{device.name}}</strong>
+                    <button class="delete-btn">
+                        <img class="remove-btn" src="assets/icons/delete.svg" alt="Remover dispositivo">
+                    </button>
+                </div>
+                <div class="device-body">
+                    <div>
+                        <strong>ID</strong>
+                        <p id="device-id">{{device.id}}</p>
+                    </div>
+                    <div>
+                        <strong>PIN</strong>
+                        <p id="device-pin">{{device.pin}}</p>
                     </div>
                 </div>
                 {% if device.value == 0 %}
@@ -45,7 +68,7 @@
                     </button>
                 {% endif %}
             </li>
-        {% endfor %}
+            {% endfor %}
         </ul>
     </div>
 {% endblock content %}
