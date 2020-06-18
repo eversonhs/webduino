@@ -34,3 +34,7 @@ button {
     font-weight: 700;
     outline: none;
 }
+
+li#template {
+    display: none;
+}
