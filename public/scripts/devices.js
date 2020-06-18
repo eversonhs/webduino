@@ -10,16 +10,15 @@ Device.prototype = {
     deviceListNode: {},
     constructor: Device,
     changeValue: function() {
-        this.value = (!this.value ? 1 : 0);
-        deviceSocket.emit('changeValue', {id: this.id, value: this.value}, (status) => {
-            if(status === 200) {
-                this.updateDevice();
+        deviceSocket.emit('changeValue', {id: this.id, value: (!this.value ? 1 : 0)}, (response) => {
+            if(response.status === "ok") {
+                this.updateDevice((!this.value ? 1 : 0));
             }
         });
     },
     deleteDevice: function(callbackFn) {
-        deviceSocket.emit('remove', {id: this.id}, (status) => {
-            if(status === 200) {
+        deviceSocket.emit('remove', {id: this.id}, (response) => {
+            if(response.status === "ok") {
                 alert(`Device deleted.`);
                 this.removeDevice(callbackFn);
             }
@@ -28,7 +27,7 @@ Device.prototype = {
             }
         });
     },
-    updateDevice: function(value = this.value) {
+    updateDevice: function(value) {
         this.value = value;
         const switchBtn = this.node.querySelector("button.switch-btn");
         if(this.value)
@@ -60,10 +59,8 @@ function addEvent(device, deviceList) {
     let deviceDeleteBtn = device.querySelector("button.delete-btn");
     let deviceSwitchBtn = device.querySelector("button.switch-btn");
     let deviceId = device.querySelector("p#device-id").textContent;
-    console.log(device);
     deviceId = parseInt(deviceId);
     deviceList[deviceId].node = device;            
-    console.log(deviceList[deviceId]);
     deviceDeleteBtn.addEventListener("click", () => {
         deviceList[deviceId].deleteDevice(() => {
             delete deviceList[deviceId];    
@@ -100,19 +97,17 @@ function populateDeviceList() {
     });
 }
 
-function submitForm(event, devices) {
+function submitForm(event) {
     event.preventDefault();
     const deviceForm = event.target;
     const formContainer = deviceForm.parentNode;
     const deviceData = new FormData(deviceForm);
     const data = JSON.parse(JSON.stringify(Object.fromEntries(deviceData)));
     
-    deviceSocket.emit('create', data, (status) => {
-        if(status === 201) {
+    deviceSocket.emit('create', data, (response) => {
+        if(response.status === "ok") {
             alert(`Device create.`);
             formContainer.classList.toggle("hidden");
-            console.log(data);
-            // addDevice(devices, data);
         }
         else {
             alert(`Error: Device not created.`);
