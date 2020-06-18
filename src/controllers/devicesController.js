@@ -7,15 +7,12 @@ async function index() {
         devices = await connection('arduinoDevices').select('*');
     }
     catch(err) {
-        console.log("error");
     }
 
     return devices;
 }
 
-async function create(data, status) {
-    console.log("Form data received, creating device...");
-    console.log(data);
+async function create(data, ackFn) {
     const {name, type, pin} = data;
     const value = 0;
     const valueChanged = 'true';
@@ -29,45 +26,52 @@ async function create(data, status) {
             value,
             valueChanged
         });
-        status(201);
+        
+        const device = await connection('arduinoDevices').
+        where('name', name).
+        andWhere('pin', pin).
+        select('*');
+        ackFn({status: "ok"});
+        this.emit('add', device);
+        this.broadcast.emit('add', device);
+
     } catch(err) {
-        console.log("Device not created");
-        status(403);
+        ackFn({status: "error"});
     }
 }
 
-async function remove(data ,status) {
-    console.log("Receive a delete request, deleting the device by ID...");
-    console.log(data);
+async function remove(data ,ackFn) {
     const {id} = data;
 
     try {
         await connection('arduinoDevices').where('id', id).delete();
-        status(200);
+        this.broadcast.emit('delete', {id: id});
+        ackFn({status: "ok", id: id});
     }
     catch(err) {
-        status(403);
+        ackFn({status: "error", id: id});
     }
 }
 
-async function changeValue(data, status) {
-    console.log("Data received to change value...");
-    console.log(data);
-    var {id, value} = data; 
-    await connection('arduinoDevices').
-        where('id', id).
-        update({
-            value: value,
-            valueChanged: 'true'
-        });
-
-    status(200);
+async function changeValue(data, ackFn) {
+    const {id, value} = data; 
+    try{
+        await connection('arduinoDevices').
+            where('id', id).
+            update({
+                value: value,
+                valueChanged: 'true'
+            });
+        this.broadcast.emit('update', {id: id, value: value});
+        ackFn({status: "ok", id: id});
+    }
+    catch(err) {
+        ackFn({status: "error", id: id});
+    }
 }
 
 module.exports = {
     connection(socket) {
-        console.log("An user has connected to the server.");
-
         index().then(data => socket.emit('index', data));
         socket.on('create', create);
         socket.on('remove', remove);
