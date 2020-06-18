@@ -33,6 +33,6 @@ module.exports = {
     async indexDevices(request, response) {
         let devices = await connection('arduinoDevices').select('*');
         
-        return response.render("devices.html", {devices});
+        return response.render("devices.html", {devices: devices});
     }
 };
